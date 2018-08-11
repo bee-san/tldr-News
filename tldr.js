@@ -1,5 +1,10 @@
 // <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
 
+// import jquery CDN
+var jQueryScript = document.createElement('script');  
+jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+document.head.appendChild(jQueryScript);
+
 document.body.style.border = "5px solid red !important";
 console.log("added border");
 
@@ -50,6 +55,7 @@ function inverseDocumentFrequency(documents){
     }
 }
 */
-
-var element = document.getElementByClassName('.story-body__inner');
-console.log(element);
+console.log("this runs 1");
+var textContent = $('.story-body__inner').contents();
+console.log(textContent);
+console.log("this runs");
