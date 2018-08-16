@@ -13,8 +13,8 @@
     "content_scripts": [
       {
         "matches": ["*://www.bbc.co.uk/news/*"],
-        "js": ["tldr.js"]
+        "js": ["jquery.js", "tldr.js"]
       }
     ]
   
-  }
+}

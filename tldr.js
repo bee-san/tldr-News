@@ -4,12 +4,9 @@
 var jQueryScript = document.createElement('script');  
 jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');
 document.head.appendChild(jQueryScript);
-
-document.body.style.border = "5px solid red !important";
-console.log("added border");
-
-
 /*
+
+
 function termFrequency(document){
     // document is an array of strings
 
@@ -54,8 +51,11 @@ function inverseDocumentFrequency(documents){
         TFDocuments[i] = termFrequency(documents[i]);
     }
 }
-*/
+
 console.log("this runs 1");
 var textContent = $('.story-body__inner').contents();
 console.log(textContent);
-console.log("this runs");
+console.log("this runs"); */
+
+var $article = $('.story-body').find('p').contents();
+console.log($article);
