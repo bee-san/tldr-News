@@ -4,7 +4,7 @@
 var jQueryScript = document.createElement('script');  
 jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');
 document.head.appendChild(jQueryScript);
-/*
+
 
 
 function termFrequency(document){
@@ -16,14 +16,12 @@ function termFrequency(document){
 
     var dict = {};
 
-    var unique_words = new Set(document);
-
+    var unique_words_set = new Set(document);
+    let unique_words = Array.from(unique_words_set);
+    console.log(unique_words[0]);
     // loops through all unique words
     for (var i = 0; i <= unique_words.length - 1; i++){
-        dict.push({
-            key: unique_words[i],
-            value: 0
-        });
+        dict[unique_words[i]] = 0
         // loops through all words in document
         for (var x = 0; x <= document.length -1; x++){
             if (unique_words[i] == document[x]){
@@ -34,16 +32,12 @@ function termFrequency(document){
 
     var returnDict = {}
     var documentLength = document.length;
-    for (const [key, value] of Object.entries(object)) {
-        returnDict.push({
-            key: key,
-            value: value / documentLength
-        })
+    for (const [key, value] of Object.entries(dict)) {
+        returnDict[key] = value / documentLength
       }
-
-    return dict;
+    return returnDict;
 }
-
+/*
 // each document is a sentence
 function inverseDocumentFrequency(documents){
     var TFDocuments = [];
@@ -51,11 +45,14 @@ function inverseDocumentFrequency(documents){
         TFDocuments[i] = termFrequency(documents[i]);
     }
 }
+*/
 
 console.log("this runs 1");
 var textContent = $('.story-body__inner').contents();
 console.log(textContent);
-console.log("this runs"); */
+console.log("this runs");
 
 var $article = $('.story-body').find('p').contents();
 console.log($article);
+
+console.log(termFrequency(['yes', 'yes', 'hello', 'yes']));
