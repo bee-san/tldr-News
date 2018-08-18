@@ -30,6 +30,7 @@ function termFrequency(document){
         }
     }
 
+    // term frequency is calculated this way
     var returnDict = {}
     var documentLength = document.length;
     for (const [key, value] of Object.entries(dict)) {
@@ -37,15 +38,40 @@ function termFrequency(document){
       }
     return returnDict;
 }
-/*
+
 // each document is a sentence
 function inverseDocumentFrequency(documents){
+    lengthOfDocuments = documents.length;
+
     var TFDocuments = [];
-    for (var i = 0, i <= documents.length - 1; i ++){
+    // calculate TF values of all documents
+    for (var i = 0; i <= documents.length - 1; i++){
         TFDocuments[i] = termFrequency(documents[i]);
     }
+
+    // gets all unique words in all TF dictionaries
+    allWords = [];
+    allWordsSet = Set();
+    for (var i = 0; i <= TFDocuments.length - 1; i++){
+        for (const [key, value] of Object.entries(dict)){
+            allWords.add[key];
+            allWordsSet.add[key];
+        }
+    }
+
+    let unique_words_set = Array.from(allWordsSet);
+
+    TFValsWord = {};
+    for (i = 0; i <= allWords.length - 1; i ++){
+        IDFVals[allWords[i]] = IDFVals[allWords[i]] + 1;
+    }
+
+    IDFVals = {};
+    for (i = 0; i <= TFVals.length - 1; i++){
+        IDFVals[unique_words_set[i]] = Math.log(lengthOfDocuments / IDFVals[i]);
+    }
 }
-*/
+
 
 console.log("this runs 1");
 var textContent = $('.story-body__inner').contents();
