@@ -8,17 +8,21 @@ document.head.appendChild(jQueryScript);
 
 
 function termFrequency(document){
+
+    // calculate TF Value of each indivudal word in a sentence
+    // add them all up in order to find tf value of each sentence
+
     // document is an array of strings
 
     // we want to go through every unique word in document
     // find out how many times that word appears in document
     // and put it into a dictionary
+    console.log(document);
 
     var dict = {};
 
     var unique_words_set = new Set(document);
     let unique_words = Array.from(unique_words_set);
-    console.log(unique_words[0]);
     // loops through all unique words
     for (var i = 0; i <= unique_words.length - 1; i++){
         dict[unique_words[i]] = 0
@@ -70,15 +74,36 @@ function inverseDocumentFrequency(documents){
     for (i = 0; i <= TFVals.length - 1; i++){
         IDFVals[unique_words_set[i]] = Math.log(lengthOfDocuments / IDFVals[i]);
     }
+    return IDFVals;
 }
 
+// https://stackoverflow.com/questions/42488048/javascript-sum-of-two-object-with-same-properties
+function sumObjectsByKey(...objs) {
+    return objs.reduce((a, b) => {
+      for (let k in b) {
+        if (b.hasOwnProperty(k))
+          a[k] = (a[k] || 0) + b[k];
+      }
+      return a;
+    }, {});
+}
 
-console.log("this runs 1");
-var textContent = $('.story-body__inner').contents();
-console.log(textContent);
-console.log("this runs");
+function TFIDF(documents){
+    let TFVals = [];
+    for (i = 0; i <= documents.length - 1; i++){
+        TFVals.add(termFrequency(documents[i]));
+    }
 
-var $article = $('.story-body').find('p').contents();
-console.log($article);
+    var IDFVals = inverseDocumentFrequency(documents);
+}
 
-console.log(termFrequency(['yes', 'yes', 'hello', 'yes']));
+// get all text from .story-body within p tags on a BBC news web article
+// we want to split this one long string into an array of sentences
+// sentences end with a full stop
+// the first array index is "share this on social media" so isn't useful to us.
+var $article = $('.story-body').find('p').contents().text().split(".");
+$article[0] = "and"
+
+console.log(termFrequency($article));
+
+// console.log(inverseDocumentFrequency([['yes', 'yes', 'hello', 'yes'], ['yes', 'hello']]));
