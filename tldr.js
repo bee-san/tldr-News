@@ -9,9 +9,6 @@ document.head.appendChild(jQueryScript);
 
 function termFrequency(document){
 
-    // calculate TF Value of each indivudal word in a sentence
-    // add them all up in order to find tf value of each sentence
-
     // document is an array of strings
 
     // we want to go through every unique word in document
@@ -41,6 +38,33 @@ function termFrequency(document){
         returnDict[key] = value / documentLength
       }
     return returnDict;
+}
+
+function termFrequencySentences(documents){
+
+    // calculate TF Value of each indivudal word in a sentence
+    // add them all up in order to find tf value of each sentence
+
+    var dictSentences = {};
+    for (i = 0; i <= documents.length - 1; i++){
+        let x = termFrequency(documents[i]);
+        let y = 0;
+
+        // get seperate TF values for every word in that sentence
+        for (const [key, value] of Object.entries(dict)){
+            y = y + value;
+        }
+
+        // y needs to be a probability over the length of the sentence
+        // maybe?
+        y = y / documents[i].length;
+
+        // creates a dictionary of sentences with TF values in it
+        dictSentences(documents[i]) = y;
+    }
+
+    return dictSentences;
+
 }
 
 // each document is a sentence
@@ -91,7 +115,7 @@ function sumObjectsByKey(...objs) {
 function TFIDF(documents){
     let TFVals = [];
     for (i = 0; i <= documents.length - 1; i++){
-        TFVals.add(termFrequency(documents[i]));
+        TFVals.add(termFrequencySentences(documents[i]));
     }
 
     var IDFVals = inverseDocumentFrequency(documents);
