@@ -23,47 +23,41 @@ function termFrequency(document){
     // and put it into a dictionary
 
     // https://stackoverflow.com/questions/5631422/stop-word-removal-in-javascript
-    var stopwords = ["a", "share", "linkthese", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any","are","aren't","as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot","could","couldn't","did","didn't","do","does","doesn't","doing","don't","down","during","each","few","for","from","further","had","hadn't","has","hasn't","have","haven't","having","he","he'd","he'll","he's","her","here","here's","hers","herself","him","himself","his","how","how's","i","i'd","i'll","i'm","i've","if","in","into","is","isn't","it","it's","its","itself","let's","me","more","most","mustn't","my","myself","no","nor","not","of","off","on","once","only","or","other","ought","our","ours","ourselves","out","over","own","same","shan't","she","she'd","she'll","she's","should","shouldn't","so","some","such","than","that","that's","the","their","theirs","them","themselves","then","there","there's","these","they","they'd","they'll","they're","they've","this","those","through","to","too","under","until","up","very","was","wasn't","we","we'd","we'll","we're","we've","were","weren't","what","what's","when","when's","where","where's","which","while","who","who's","whom","why","why's","with","won't","would","wouldn't","you","you'd","you'll","you're","you've","your","yours","yourself","yourselves", "this"];
+    var stopwords = ["a", "withemailfacebookmessengermessengertwitterpinterestwhatsapplinkedincopy", "share", "linkthese", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any","are","aren't","as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot","could","couldn't","did","didn't","do","does","doesn't","doing","don't","down","during","each","few","for","from","further","had","hadn't","has","hasn't","have","haven't","having","he","he'd","he'll","he's","her","here","here's","hers","herself","him","himself","his","how","how's","i","i'd","i'll","i'm","i've","if","in","into","is","isn't","it","it's","its","itself","let's","me","more","most","mustn't","my","myself","no","nor","not","of","off","on","once","only","or","other","ought","our","ours","ourselves","out","over","own","same","shan't","she","she'd","she'll","she's","should","shouldn't","so","some","such","than","that","that's","the","their","theirs","them","themselves","then","there","there's","these","they","they'd","they'll","they're","they've","this","those","through","to","too","under","until","up","very","was","wasn't","we","we'd","we'll","we're","we've","were","weren't","what","what's","when","when's","where","where's","which","while","who","who's","whom","why","why's","with","won't","would","wouldn't","you","you'd","you'll","you're","you've","your","yours","yourself","yourselves", "this"];
 
     // turn document into lowercase words, remove all stopwords
     document_in_lowercase = document.split(" ").map(function(x){ return x.toLowerCase() });
+    console.log(document_in_lowercase);
     words_without_stopwords = document_in_lowercase.filter( x => !stopwords.includes(x) );
+    console.log(words_without_stopwords);
 
-
+    // all of this below code does not use stopwords
     var dict = {};
+    // sets have no repititions. Quick way to get unique words.
     var unique_words_set = new Set(words_without_stopwords);
     let unique_words = Array.from(unique_words_set);
 
-    // loops through all unique words
+    // loops through all unique words, counts how many times each word appears
+    // into a dictionary like: {WORD: COUNT OF APPERANCES}
     for (var i = 0; i <= unique_words.length - 1; i++){
- 
         dict[unique_words[i]] = 0
-
         // skips stop words
-        if (stopwords.includes(unique_words[i])){
-            // do nothing
-        }
-        else{
-        // loops through all words in document
-            for (var x = 0; x <= words.length -1; x++){
-                if (unique_words[i] == words[x]){
+        if (!(stopwords.includes(unique_words[i]))){
+            for (var x = 0; x <= words_without_stopwords.length -1; x++){
+                if (unique_words[i] == words_without_stopwords[x]){
                     dict[unique_words[i]] = dict[unique_words[i]] + 1;
                 }
             }
         }
-    }
-
-    // term frequency is calculated this way
-    var returnDict = {}
-    var documentLength = document.length;
-    for (const [key, value] of Object.entries(dict)) {
-        returnDict[key] = value / documentLength
+        // term frequency is calculated as a percentage. divide how many times
+        // a word appears by how many words there are.
+        dict[unique_words[i]] = dict[unique_words[i]] / document_in_lowercase.length;
     }
 
     // assigns a TF value to each sentence
 
+    // splits it up into sentences now
     var sentences = document.split(".");
-    sentences[0] = "and";
 
     var TFSentences = {};
     // for every sentence
@@ -71,57 +65,23 @@ function termFrequency(document){
         // for every word in that sentence
         let sentence_split_words = sentences[i].split(" ");
         // get the assiocated TF values of each word
+        // temp.add is the "TF" value of a sentence, we need to divide it at the end
         var temp_add = 0.0;
         for (x = 0; x <= sentence_split_words.length - 1; x++){
+            // if the word is not a stopword, get the assiocated TF value and add it to temp_add
             if (sentence_split_words[x] in dict){
                 // adds all the TF values up
                 temp_add = temp_add + dict[sentence_split_words[x]];
             }
             else{
-                // the only errors are stop words :)
-                console.log("** ERROR **");
-                console.log(sentence_split_words[x]);
+                // nothing, since it's a stop word.
             }
         }
-        // term frequency is always between 0 and 1.
+        // term frequency is always between 0 and 1
         TFSentences[sentences[i]] = temp_add / sentences.length;
     }
     
     return TFSentences;
-}
-
-function termFrequencySentences(documents){
-
-    // calculate TF Value of each indivudal word in a sentence
-    // add them all up in order to find tf value of each sentence
-
-    console.log(documents);
-    console.log(documents.length);
-
-    var dictSentences = {};
-    for (i = 0; i <= documents.length - 1; i++){
-        let x = termFrequency(documents[i]);
-        console.log(x);
-        let y = 0;
-
-        // get seperate TF values for every word in that sentence
-        for (x = 0; x <= documents[i].length - 1; x ++){}
-        for (const [key, value] of Object.entries(dictSentences)){
-            y = y + value;
-        }
-
-        // y needs to be a probability over the length of the sentence
-        // maybe?
-        y = y / documents[i].length;
-
-        // creates a dictionary of sentences with TF values in it
-        dictSentences(documents[i]) = y;
-    }
-
-    console.log(dictSentences);
-
-    return dictSentences;
-
 }
 
 // each document is a sentence
@@ -186,5 +146,5 @@ function TFIDF(documents){
 // the first array index is "share this on social media" so isn't useful to us.
 var $article = $('.story-body').find('p').contents().text();
 
-console.log(termFrequency($article));
+console.log(inverseDocumentFrequency($article));
 // console.log(inverseDocumentFrequency([['yes', 'yes', 'hello', 'yes'], ['yes', 'hello']]));
