@@ -14,47 +14,47 @@ Build summary by adding every sentence above a certain score threshold
 
 */
 
-function termFrequency(document){
+function prettify(document){
+        // https://stackoverflow.com/questions/5631422/stop-word-removal-in-javascript
 
-    // document is an array of strings
-
-    // we want to go through every unique word in document
-    // find out how many times that word appears in document
-    // and put it into a dictionary
-
-    // https://stackoverflow.com/questions/5631422/stop-word-removal-in-javascript
     var stopwords = ["a", "withemailfacebookmessengermessengertwitterpinterestwhatsapplinkedincopy", "share", "linkthese", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any","are","aren't","as","at","be","because","been","before","being","below","between","both","but","by","can't","cannot","could","couldn't","did","didn't","do","does","doesn't","doing","don't","down","during","each","few","for","from","further","had","hadn't","has","hasn't","have","haven't","having","he","he'd","he'll","he's","her","here","here's","hers","herself","him","himself","his","how","how's","i","i'd","i'll","i'm","i've","if","in","into","is","isn't","it","it's","its","itself","let's","me","more","most","mustn't","my","myself","no","nor","not","of","off","on","once","only","or","other","ought","our","ours","ourselves","out","over","own","same","shan't","she","she'd","she'll","she's","should","shouldn't","so","some","such","than","that","that's","the","their","theirs","them","themselves","then","there","there's","these","they","they'd","they'll","they're","they've","this","those","through","to","too","under","until","up","very","was","wasn't","we","we'd","we'll","we're","we've","were","weren't","what","what's","when","when's","where","where's","which","while","who","who's","whom","why","why's","with","won't","would","wouldn't","you","you'd","you'll","you're","you've","your","yours","yourself","yourselves", "this"];
-
+    console.log("after stopwords");
     // turn document into lowercase words, remove all stopwords
+    console.log(document.split(" ").map(function(x){ return x.toLowerCase() }));
     document_in_lowercase = document.split(" ").map(function(x){ return x.toLowerCase() });
-    console.log(document_in_lowercase);
-    words_without_stopwords = document_in_lowercase.filter( x => !stopwords.includes(x) );
-    console.log(words_without_stopwords);
+    console.log("after lowercase");
+    return document_in_lowercase.filter( x => !stopwords.includes(x) );
 
-    // all of this below code does not use stopwords
-    var dict = {};
-    // sets have no repititions. Quick way to get unique words.
-    var unique_words_set = new Set(words_without_stopwords);
+}
+
+function countWords(words){
+    // retursn a dictionary of {WORD: COUNT} where count is
+    // how many times that word appears in "words".
+    var unique_words_set = new Set(words);
     let unique_words = Array.from(unique_words_set);
 
-    // loops through all unique words, counts how many times each word appears
-    // into a dictionary like: {WORD: COUNT OF APPERANCES}
-    for (var i = 0; i <= unique_words.length - 1; i++){
+    var dict = {};
+    for (var i =0; i <= unique_words.length - 1; i++){
         dict[unique_words[i]] = 0
-        // skips stop words
-        if (!(stopwords.includes(unique_words[i]))){
-            for (var x = 0; x <= words_without_stopwords.length -1; x++){
-                if (unique_words[i] == words_without_stopwords[x]){
-                    dict[unique_words[i]] = dict[unique_words[i]] + 1;
-                }
+        for (var x = 0; x <= words_without_stopwords.length -1; x++){
+            if (unique_words[i] == words[x]){
+                dict[unique_words[i]] = dict[unique_words[i]] + 1;
             }
         }
-        // term frequency is calculated as a percentage. divide how many times
-        // a word appears by how many words there are.
-        dict[unique_words[i]] = dict[unique_words[i]] / document_in_lowercase.length;
     }
+    return dict;
+}
 
-    // assigns a TF value to each sentence
+function termFrequency(document){
+
+    words_without_stopwords = prettify(document);
+
+    dict = countWords(words_without_stopwords)
+
+    // actually makes it TF values
+    for (const [key, value] of Object.entries(dict)){
+        dict[unique_words[i]] = dict[unique_words[i]] / words_without_stopwords.length;
+    }
 
     // splits it up into sentences now
     var sentences = document.split(".");
@@ -84,37 +84,68 @@ function termFrequency(document){
     return TFSentences;
 }
 
-// each document is a sentence
-function inverseDocumentFrequency(documents){
-    lengthOfDocuments = documents.length;
-
-    var TFDocuments = [];
-    // calculate TF values of all documents
-    for (var i = 0; i <= documents.length - 1; i++){
-        TFDocuments[i] = termFrequency(documents[i]);
+/*
+    for (var i = 0; i <= unique_words.length - 1; i++){
+        dict[unique_words[i]] = 0
+        // skips stop words
+        if (!(stopwords.includes(unique_words[i]))){
+            for (var x = 0; x <= words_without_stopwords.length -1; x++){
+                if (unique_words[i] == words_without_stopwords[x]){
+                    dict[unique_words[i]] = dict[unique_words[i]] + 1;
+                }
+            }
+        }
+        // term frequency is calculated as a percentage. divide how many times
+        // a word appears by how many words there are.
+        dict[unique_words[i]] = dict[unique_words[i]] / document_in_lowercase.length;
     }
+*/
 
+// each document is a        sentence
+function inverseDocumentFrequency(documents){
+    console.log("before prettify");
+    words_without_stopwords = prettify(documents);
+    console.log(words_without_stopwords);
+    console.log("after prettify");
+    sentences = documents.split(".")
+    console.log(sentences);
+    lengthOfDocuments = sentences.length;
+
+    console.log("after data stuff");
+    var WordCountDocuments = [];
+    // calculate TF values of all documents
+    for (var i = 0; i <= sentences.length - 1; i++){
+        WordCountDocuments[i] = countWords(sentences[i]);
+    }
+    console.log("after for loop11");
+    console.log(WordCountDocuments);
+
+    
+    allWordsSet = new Set(words_without_stopwords);
+    console.log("meme be daddy");
+    /*
     // gets all unique words in all TF dictionaries
     allWords = [];
     allWordsSet = Set();
-    for (var i = 0; i <= TFDocuments.length - 1; i++){
+    for (var i = 0; i <= WordCountDocuments.length - 1; i++){
         for (const [key, value] of Object.entries(dict)){
             allWords.add[key];
             allWordsSet.add[key];
         }
     }
+    */
 
     let unique_words_set = Array.from(allWordsSet);
 
-    TFValsWord = {};
-    for (i = 0; i <= allWords.length - 1; i ++){
-        IDFVals[allWords[i]] = IDFVals[allWords[i]] + 1;
-    }
-
     IDFVals = {};
-    for (i = 0; i <= TFVals.length - 1; i++){
-        IDFVals[unique_words_set[i]] = Math.log(lengthOfDocuments / IDFVals[i]);
+    console.log(WordCountDocuments);
+
+    console.log("before 1 for loop 1");
+    for (i = 0; i <= unique_words_set.length - 1; i++){
+        IDFVals[unique_words_set[i]] = Math.log(lengthOfDocuments / WordCountDocuments[i]);
     }
+    console.log("after idfvals");
+    console.log(IDFVals);
     return IDFVals;
 }
 
@@ -145,6 +176,6 @@ function TFIDF(documents){
 // sentences end with a full stop
 // the first array index is "share this on social media" so isn't useful to us.
 var $article = $('.story-body').find('p').contents().text();
-
+console.log($article.split(" ").map(function(x){ return x.toLowerCase() }));
 console.log(inverseDocumentFrequency($article));
 // console.log(inverseDocumentFrequency([['yes', 'yes', 'hello', 'yes'], ['yes', 'hello']]));
