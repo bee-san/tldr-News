@@ -103,6 +103,8 @@ function inverseDocumentFrequency(document){
      perform idf on each one
 
     */
+    console.log("in idf");
+    console.log
     const words_without_stopwords = prettify(document);
 
     const sentences = document.split(".").map(item => item.trim());
@@ -113,13 +115,19 @@ function inverseDocumentFrequency(document){
     // counts words of each sentence
     // as each sentence is a document
     // prettifys each sentence so it doesn't have stopwords
+    console.log("here 1");
 
-    wordCountAll = wordCount(words_without_stopwords);
+    const wordCountAll = countWords(words_without_stopwords);
+    
+    console.log("here 2");
 
     wordCountSentences = [];
     for (let i = 0; i <= lengthOfDocuments - 1; i ++){
+        console.log("in for loop");
         wordCountSentences.push(countWords(prettify(sentences[i])));
     }
+    console.log("wordCountSentences");
+    console.log(wordCountSentences);
 
     // const WordCountDocuments = countWords(words_without_stopwords);
     // calculate TF values of all documents
@@ -139,6 +147,7 @@ function inverseDocumentFrequency(document){
         }
         IDFVals[unique_words_set[i]] = Math.log10(wordCountAll[unique_words_set[i]] / temp_add);
     }
+    console.log(IDFVals);
 
     let IDFSentences = {};
     // for every sentence
@@ -148,18 +157,19 @@ function inverseDocumentFrequency(document){
         // get the assiocated IDF values of each word
         // temp.add is the "IDF" value of a sentence, we need to divide it at the end
         let temp_add = 0.0;
+        let words_no_stop_words_length = prettify(sentences[i]).length;
         for (let x = 0; x <= sentence_split_words.length - 1; x++){
             // if the word is not a stopword, get the assiocated IDF value and add it to temp_add
-            if (sentence_split_words[x] in IDFVals){
+            if (sentence_split_words[x].toLowerCase() in IDFVals){
                 // adds all the IDF values up
-                temp_add = temp_add + IDFVals[sentence_split_words[x]];
+                temp_add = temp_add + IDFVals[sentence_split_words[x].toLowerCase()];
             }
             else{
                 // nothing, since it's a stop word.
             }
         }
         // term frequency is always between 0 and 1
-        IDFSentences[sentences[i]] = temp_add / sentence_split_words.length;
+        IDFSentences[sentences[i]] = temp_add / words_no_stop_words_length;
     }
     return IDFSentences;
 }
@@ -220,6 +230,6 @@ function TFIDF(documents){
 // console.log(termFrequency("Hello, my name is Brandon. Brandon Brandon. The elephant jumps over the moon"));
 
 let $article = $('.story-body').find('p').text();
-console.log(termFrequency($article));
+console.log(TFIDF($article));
 // insert text into body of document
 let insert = $('.story-body').prepend(TFIDF($article));
