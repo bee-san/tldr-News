@@ -56,13 +56,13 @@ function termFrequency(document){
     const sentences = document.split(".").map(item => item.trim());
     sentences[0] = sentences[0].substring(146);
 
-    const dict = countWords(words_without_stopwords)
+    const TFVals = countWords(words_without_stopwords)
 
     const unique_words = uniqueWords(words_without_stopwords);
 
     // actually makes it TF values
     for (const [key, value] of Object.entries(dict)){
-        dict[key] = dict[key] / words_without_stopwords.length;
+        TFVals[key] = dict[key] / words_without_stopwords.length;
     }
     // splits it up into sentences now
 
@@ -75,11 +75,11 @@ function termFrequency(document){
         // temp.add is the "TF" value of a sentence, we need to divide it at the end
         let temp_add = 0.0;
         for (let x = 0; x <= sentence_split_words.length - 1; x++){
-            var words_no_stop_words_length = sentence_split_words[x].length;
+            var words_no_stop_words_length = prettify(sentences[i]).length;
             // if the word is not a stopword, get the assiocated TF value and add it to temp_add
-            if (sentence_split_words[x].toLowerCase() in dict){
+            if (sentence_split_words[x].toLowerCase() in TFVals){
                 // adds all the TF values up
-                temp_add = temp_add + dict[sentence_split_words[x].toLowerCase()];
+                temp_add = temp_add + TFVals[sentence_split_words[x].toLowerCase()];
             }
             else{
                 // nothing, since it's a stop word.
@@ -93,12 +93,14 @@ function termFrequency(document){
     return TFSentences;
 }
 
-// each document is a        sentence
+// each document is a sentence
 function inverseDocumentFrequency(documents){
     // calculates the inverse document frequency of every sentence
     const words_without_stopwords = prettify(documents);
-    const sentences = documents.split(".")
-    //sentences[0] = sentences[0].substring(146);
+
+    const sentences = document.split(".").map(item => item.trim());
+
+    sentences[0] = sentences[0].substring(146);
     const lengthOfDocuments = sentences.length;
 
     const WordCountDocuments = countWords(words_without_stopwords);
