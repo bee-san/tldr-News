@@ -56,13 +56,13 @@ function termFrequency(document){
     const sentences = document.split(".").map(item => item.trim());
     sentences[0] = sentences[0].substring(146);
 
-    const TFVals = countWords(words_without_stopwords)
+    const dict = countWords(words_without_stopwords)
 
     const unique_words = uniqueWords(words_without_stopwords);
 
     // actually makes it TF values
     for (const [key, value] of Object.entries(dict)){
-        TFVals[key] = dict[key] / words_without_stopwords.length;
+        dict[key] = dict[key] / words_without_stopwords.length;
     }
     // splits it up into sentences now
 
@@ -74,12 +74,14 @@ function termFrequency(document){
         // get the assiocated TF values of each word
         // temp.add is the "TF" value of a sentence, we need to divide it at the end
         let temp_add = 0.0;
+        // ***************** I CHANGED THE BELOW LINE IN TF. IT WAS ORIGINALLY IN
+        // THE INNER X LOOP
+        let words_no_stop_words_length = prettify(sentences[i]).length;
         for (let x = 0; x <= sentence_split_words.length - 1; x++){
-            var words_no_stop_words_length = prettify(sentences[i]).length;
             // if the word is not a stopword, get the assiocated TF value and add it to temp_add
-            if (sentence_split_words[x].toLowerCase() in TFVals){
+            if (sentence_split_words[x].toLowerCase() in dict){
                 // adds all the TF values up
-                temp_add = temp_add + TFVals[sentence_split_words[x].toLowerCase()];
+                temp_add = temp_add + dict[sentence_split_words[x].toLowerCase()];
             }
             else{
                 // nothing, since it's a stop word.
@@ -94,24 +96,48 @@ function termFrequency(document){
 }
 
 // each document is a sentence
-function inverseDocumentFrequency(documents){
+function inverseDocumentFrequency(document){
     // calculates the inverse document frequency of every sentence
-    const words_without_stopwords = prettify(documents);
+    /*
+    count every single word in each sentence, without stopwords in it
+     perform idf on each one
+
+    */
+    const words_without_stopwords = prettify(document);
 
     const sentences = document.split(".").map(item => item.trim());
-
     sentences[0] = sentences[0].substring(146);
+
     const lengthOfDocuments = sentences.length;
 
-    const WordCountDocuments = countWords(words_without_stopwords);
+    // counts words of each sentence
+    // as each sentence is a document
+    // prettifys each sentence so it doesn't have stopwords
+
+    wordCountAll = wordCount(words_without_stopwords);
+
+    wordCountSentences = [];
+    for (let i = 0; i <= lengthOfDocuments - 1; i ++){
+        wordCountSentences.push(countWords(prettify(sentences[i])));
+    }
+
+    // const WordCountDocuments = countWords(words_without_stopwords);
     // calculate TF values of all documents
 
     const unique_words_set = uniqueWords(words_without_stopwords);
 
     let IDFVals = {};
 
+    // how many times that word appears in documents fucvking end my fucking life
+    wordCountSentencesLength = wordCountSentences.length;
     for (let i = 0; i <= unique_words_set.length - 1; i++){
-        IDFVals[unique_words_set[i]] = Math.log10(lengthOfDocuments / WordCountDocuments[unique_words_set[i]]);
+        let temp_add = 0;
+        for (let x = 0; x <= wordCountSentencesLength - 1; x++){
+            if (unique_words_set[i] in wordCountSentences[x]){
+                temp_add =+ 1;
+            }
+        }
+        IDFVals[unique_words_set[i]] = Math.log10(wordCountAll[unique_words_set[i]] / temp_add);
     }
 
     let IDFSentences = {};
