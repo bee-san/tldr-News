@@ -48,24 +48,21 @@ function uniqueWords(words){
 
 function termFrequency(document){
     // calculates term frequency of each sentence
-
     words_without_stopwords = prettify(document);
-    // sentences after other sentences have spaces before them
-    // "Hello. Brandon" has a space before "Brandon". This gets
-    // rid of it.
+    
+    // gets rid of trailing spaces
     const sentences = document.split(".").map(item => item.trim());
     sentences[0] = sentences[0].substring(146);
 
-    const dict = countWords(words_without_stopwords)
-
+    const TFVals = countWords(words_without_stopwords)
     const unique_words = uniqueWords(words_without_stopwords);
 
-    // actually makes it TF values
-    for (const [key, value] of Object.entries(dict)){
-        dict[key] = dict[key] / words_without_stopwords.length;
+    // actually makes it TF values according to formula
+    for (const [key, value] of Object.entries(TFVals)){
+        TFVals[key] = TFVals[key] / words_without_stopwords.length;
     }
-    // splits it up into sentences now
 
+    // splits it up into sentences now
     var TFSentences = {};
     // for every sentence
     for (let i = 0; i <= sentences.length - 1; i ++){
@@ -74,21 +71,18 @@ function termFrequency(document){
         // get the assiocated TF values of each word
         // temp.add is the "TF" value of a sentence, we need to divide it at the end
         let temp_add = 0.0;
-        // ***************** I CHANGED THE BELOW LINE IN TF. IT WAS ORIGINALLY IN
-        // THE INNER X LOOP
         let words_no_stop_words_length = prettify(sentences[i]).length;
         for (let x = 0; x <= sentence_split_words.length - 1; x++){
-            // if the word is not a stopword, get the assiocated TF value and add it to temp_add
-            if (sentence_split_words[x].toLowerCase() in dict){
+            // get the assiocated TF value and add it to temp_add
+            if (sentence_split_words[x].toLowerCase() in TFVals){
                 // adds all the TF values up
-                temp_add = temp_add + dict[sentence_split_words[x].toLowerCase()];
+                temp_add = temp_add + TFVals[sentence_split_words[x].toLowerCase()];
             }
             else{
                 // nothing, since it's a stop word.
             }
         }
-        // term frequency is always between 0 and 1
-        // ***** TF sentences divide by X number of items on top
+        // TF sentences divide by X number of items on top
         TFSentences[sentences[i]] = temp_add / words_no_stop_words_length;
     }
     
@@ -98,48 +92,34 @@ function termFrequency(document){
 // each document is a sentence
 function inverseDocumentFrequency(document){
     // calculates the inverse document frequency of every sentence
-    /*
-    count every single word in each sentence, without stopwords in it
-     perform idf on each one
-
-    */
-    console.log("in idf");
-    console.log
     const words_without_stopwords = prettify(document);
+    const unique_words_set = uniqueWords(words_without_stopwords);
 
     const sentences = document.split(".").map(item => item.trim());
     sentences[0] = sentences[0].substring(146);
 
     const lengthOfDocuments = sentences.length;
+    // prettifys each sentence so it doesn't have stopwords
+
+    const wordCountAll = countWords(words_without_stopwords);
 
     // counts words of each sentence
     // as each sentence is a document
-    // prettifys each sentence so it doesn't have stopwords
-    console.log("here 1");
-
-    const wordCountAll = countWords(words_without_stopwords);
-    
-    console.log("here 2");
-
     wordCountSentences = [];
     for (let i = 0; i <= lengthOfDocuments - 1; i ++){
-        console.log("in for loop");
         wordCountSentences.push(countWords(prettify(sentences[i])));
     }
-    console.log("wordCountSentences");
-    console.log(wordCountSentences);
 
-    // const WordCountDocuments = countWords(words_without_stopwords);
+
     // calculate TF values of all documents
-
-    const unique_words_set = uniqueWords(words_without_stopwords);
-
     let IDFVals = {};
 
-    // how many times that word appears in documents fucvking end my fucking life
+    // how many times that word appears in all sentences (documents)
     wordCountSentencesLength = wordCountSentences.length;
+    // for every unique word
     for (let i = 0; i <= unique_words_set.length - 1; i++){
         let temp_add = 0;
+        // count how many times unique word appears in all sentences
         for (let x = 0; x <= wordCountSentencesLength - 1; x++){
             if (unique_words_set[i] in wordCountSentences[x]){
                 temp_add =+ 1;
@@ -147,7 +127,6 @@ function inverseDocumentFrequency(document){
         }
         IDFVals[unique_words_set[i]] = Math.log10(wordCountAll[unique_words_set[i]] / temp_add);
     }
-    console.log(IDFVals);
 
     let IDFSentences = {};
     // for every sentence
@@ -213,15 +192,6 @@ function TFIDF(documents){
             max3Sent = key;
         }
     }
-
-    console.log(max);
-    console.log(max_sentence);
-    console.log(max2);
-    console.log(max2Sent);
-    console.log(max3);
-    console.log(max3Sent);
-    ///console.log(TFidfDict);
-
     return ("<br>" + "•" + max_sentence + "<br><br>" + "•" + max2Sent + "<br><br>" + "•" + max3Sent);
 }
 
@@ -229,7 +199,7 @@ function TFIDF(documents){
 
 // console.log(termFrequency("Hello, my name is Brandon. Brandon Brandon. The elephant jumps over the moon"));
 
+// get all text from .story-body within p tags on a BBC news web article
 let $article = $('.story-body').find('p').text();
-console.log(TFIDF($article));
 // insert text into body of document
 let insert = $('.story-body').prepend(TFIDF($article));
