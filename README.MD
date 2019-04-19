@@ -6,3 +6,4 @@ Uses an algorithm to determine the most important sentences in a news article an
 
 Term Frequency * Inverse Document Frequency
 
+https://skerritt.blog/tfidf/
