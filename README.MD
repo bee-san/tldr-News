@@ -4,6 +4,8 @@ Uses an algorithm to determine the most important sentences in a news article an
 
 ![img](https://skerritt.blog/content/images/2019/01/image-512.png)
 
+Everything inside the red box has been selected by the algorithm as the most important sentences, ordered from most important to least important.
+
 # What algorithm?
 
 Term Frequency * Inverse Document Frequency
